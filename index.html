@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Javier Rodríguez — Desarrollador Full Stack</title>
+<meta name="description" content="Javier Rodríguez, Desarrollador Full Stack especializado en React, Angular y TypeScript, sistemas en tiempo real y APIs REST.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF1F5;
+    --surface:#FFFFFF;
+    --surface-2:#E4E9EF;
+    --ink:#0E141B;
+    --muted:#57616F;
+    --accent:#146C74;
+    --accent-bright:#1C93A0;
+    --online:#1FA463;
+    --border:#D7DDE4;
+    --shadow: 0 1px 2px rgba(14,20,27,.04), 0 8px 24px rgba(14,20,27,.06);
+    --ease-out: cubic-bezier(.16,1,.3,1);
+    --ease-in-out: cubic-bezier(.65,0,.35,1);
+    color-scheme: light;
+  }
+  html[data-theme="dark"]{
+    --bg:#0A0E13;
+    --surface:#121821;
+    --surface-2:#1A222E;
+    --ink:#E8EDF3;
+    --muted:#8E9AAA;
+    --accent:#35C6D1;
+    --accent-bright:#57DCE6;
+    --online:#3ED98A;
+    --border:#232D3A;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark){
+    html[data-theme="auto"]{
+      --bg:#0A0E13; --surface:#121821; --surface-2:#1A222E; --ink:#E8EDF3;
+      --muted:#8E9AAA; --accent:#35C6D1; --accent-bright:#57DCE6; --online:#3ED98A;
+      --border:#232D3A; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.35);
+      color-scheme: dark;
+    }
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.5;
+    transition:background .4s var(--ease-in-out), color .4s var(--ease-in-out);
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;}
+  ::selection{background:var(--accent); color:#fff;}
+  :focus-visible{outline:2px solid var(--accent-bright); outline-offset:3px; border-radius:4px;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; max-width:1080px; margin:0 auto;}
+  .brand{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:15px; letter-spacing:.02em; display:flex; align-items:center; gap:8px;}
+  .brand .dot{width:8px; height:8px; border-radius:50%; background:var(--online); box-shadow:0 0 0 3px color-mix(in srgb, var(--online) 25%, transparent); animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.45;}}
+  .navlinks{display:flex; gap:28px; list-style:none;}
+  .navlinks a{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; transition:color .2s;
+    border-bottom:1px solid transparent; padding-bottom:2px;
+  }
+  .navlinks a:hover{color:var(--ink); border-color:var(--accent);}
+  .navwrap{display:flex; align-items:center; gap:28px;}
+  .navmobile{display:none;}
+
+  .themebtn{
+    display:flex; align-items:center; gap:6px;
+    background:var(--surface); border:1px solid var(--border); border-radius:20px;
+    padding:6px 6px; cursor:pointer; color:var(--muted);
+  }
+  .themebtn button{
+    all:unset; cursor:pointer; padding:5px 9px; border-radius:14px; font-size:13px; line-height:1;
+    display:flex; align-items:center; justify-content:center; color:var(--muted);
+    transition:background .2s, color .2s;
+  }
+  .themebtn button.active{background:var(--accent); color:#fff;}
+
+  section{padding:96px 0; scroll-margin-top:88px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-bright); display:flex; align-items:center; gap:10px; margin-bottom:18px;
+  }
+  .eyebrow::before{content:''; width:20px; height:1px; background:var(--accent-bright);}
+
+  /* Scroll reveal utility */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s var(--ease-out), transform .6s var(--ease-out);}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+  }
+
+  /* HERO */
+  .hero{padding:88px 0 72px;}
+  @keyframes fadeInUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+  .hero .eyebrow{opacity:0; animation:fadeInUp .6s var(--ease-out) .0s forwards;}
+  .hero h1{
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:clamp(34px, 6vw, 60px); line-height:1.05; letter-spacing:-.01em; margin-bottom:18px;
+    opacity:0; animation:fadeInUp .7s var(--ease-out) .08s forwards;
+  }
+  .hero h1 span{color:var(--accent);}
+  .hero p.lead{font-size:18px; color:var(--muted); max-width:560px; margin-bottom:32px; opacity:0; animation:fadeInUp .7s var(--ease-out) .18s forwards;}
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:48px; opacity:0; animation:fadeInUp .7s var(--ease-out) .28s forwards;}
+  .btn{
+    font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.03em; text-decoration:none;
+    padding:13px 22px; border-radius:8px; display:inline-flex; align-items:center; gap:8px; transition:transform .25s var(--ease-out), box-shadow .25s var(--ease-out);
+  }
+  .btn-primary{background:var(--accent); color:#fff; box-shadow:var(--shadow);}
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-secondary{background:transparent; color:var(--ink); border:1px solid var(--border);}
+  .btn-secondary:hover{border-color:var(--accent); color:var(--accent-bright); transform:translateY(-2px);}
+
+  .hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:20px; align-items:stretch;}
+
+  /* Live console / signature element */
+  .console{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:var(--shadow); overflow:hidden;
+    opacity:0; animation:fadeInUp .7s var(--ease-out) .15s forwards;
+  }
+  .console-top{
+    display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted);
+  }
+  .console-top .dots{display:flex; gap:6px;}
+  .console-top .dots span{width:9px; height:9px; border-radius:50%; background:var(--border);}
+  .console-body{padding:16px 18px; font-family:'JetBrains Mono',monospace; font-size:12.5px; min-height:190px;}
+  .log-line{display:flex; gap:10px; padding:5px 0; color:var(--muted); opacity:0; animation:login .5s ease forwards;}
+  .log-line .ts{color:var(--accent-bright); flex-shrink:0;}
+  .log-line .tag{color:var(--online); flex-shrink:0;}
+  .log-line .msg{color:var(--ink);}
+  @keyframes login{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+  .cursor-line{display:flex; align-items:center; gap:6px; color:var(--muted); margin-top:4px;}
+  .caret{width:7px; height:14px; background:var(--accent); animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  .meta-row{display:flex; gap:28px; flex-wrap:wrap; color:var(--muted); font-size:13.5px; opacity:0; animation:fadeInUp .7s var(--ease-out) .38s forwards;}
+  .meta-row .item{display:flex; align-items:center; gap:8px;}
+  .meta-row .item svg{flex-shrink:0;}
+
+  /* SOBRE MI */
+  .about-grid{display:grid; grid-template-columns:1.3fr .9fr; gap:48px; align-items:start;}
+  .about-grid h2{font-family:'JetBrains Mono',monospace; font-size:clamp(26px,3.5vw,34px); margin-bottom:22px; letter-spacing:-.01em;}
+  .about-grid p{color:var(--muted); font-size:16px; margin-bottom:16px; max-width:56ch;}
+  .about-grid strong{color:var(--ink); font-weight:600;}
+  .facts{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px; box-shadow:var(--shadow);}
+  .facts .fact{display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); font-size:13.5px;}
+  .facts .fact:last-child{border-bottom:none;}
+  .facts .fact .k{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.05em; text-transform:uppercase;}
+  .facts .fact .v{font-weight:600; text-align:right;}
+
+  /* EXPERIENCIA */
+  .timeline{position:relative; padding-left:52px;}
+  .timeline::before{content:''; position:absolute; left:17px; top:6px; bottom:6px; width:1px; background:var(--border);}
+  .tl-item{position:relative; padding-bottom:44px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-num{
+    position:absolute; left:-52px; top:0; width:36px; height:36px; border-radius:50%;
+    background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--accent-bright);
+  }
+  .tl-header{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:6px;}
+  .tl-role{font-size:19px; font-weight:700;}
+  .tl-role .company{color:var(--accent-bright);}
+  .tl-date{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); white-space:nowrap; padding-top:3px;}
+  .tl-list{color:var(--muted); font-size:15px; margin-top:10px; padding-left:18px;}
+  .tl-list li{margin-bottom:7px;}
+
+  /* PROYECTOS */
+  .tab-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px;}
+  .tab{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.02em;
+    padding:9px 18px; border-radius:999px; border:1px solid var(--border); background:var(--surface);
+    color:var(--muted); cursor:pointer; transition:all .2s ease;
+  }
+  .tab:hover{border-color:var(--accent); color:var(--ink);}
+  .tab.active{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  .tab{transition:all .25s var(--ease-out);}
+
+  .proj-layout{display:grid; grid-template-columns:.85fr 1.35fr; gap:24px; align-items:start;}
+
+  .proj-info{
+    position:sticky; top:96px; min-height:320px;
+  }
+  .proj-info .ph-icon{
+    display:inline-flex; align-items:center; justify-content:center; width:52px; height:52px;
+    border-radius:14px; background:var(--ink); color:var(--bg); margin-bottom:22px;
+  }
+  .proj-info .ph-icon svg{width:26px; height:26px;}
+  .proj-info h3{
+    font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700;
+    margin-bottom:8px; line-height:1.25; letter-spacing:-.01em;
+  }
+  .proj-info .info-cat{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:20px;
+  }
+  .proj-info p{color:var(--muted); font-size:15px; margin-bottom:22px; line-height:1.65;}
+  .proj-info .info-stack{
+    border-top:1px solid var(--border); padding-top:14px;
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent-bright);
+  }
+  .proj-info .info-demo-row{display:flex; gap:20px; margin-top:18px; flex-wrap:wrap;}
+  .proj-info .info-demo{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--accent-bright);
+    text-decoration:none; border-bottom:1px solid var(--accent-bright); padding-bottom:2px;
+  }
+  .proj-info .info-demo:hover{color:var(--ink); border-color:var(--ink);}
+  .proj-info-fade{animation:fadeInUp .35s var(--ease-out) both;}
+
+  .proj-list{display:flex; flex-direction:column; gap:12px;}
+  .proj-item{
+    all:unset; box-sizing:border-box; width:100%; text-align:left; font:inherit; color:inherit;
+    cursor:pointer; display:flex; gap:14px; align-items:flex-start;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px;
+    box-shadow:var(--shadow); transition:opacity .4s var(--ease-out), transform .4s var(--ease-out), border-color .25s var(--ease-out), background .25s var(--ease-out);
+  }
+  .proj-item:hover{border-color:var(--accent); transform:translateX(3px);}
+  .proj-item.active{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 7%, var(--surface));}
+  .proj-item.is-hidden{display:none;}
+  .proj-item.anim-in{opacity:0; transform:translateY(10px);}
+  .proj-item .pnum{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent-bright); flex-shrink:0; padding-top:3px;
+  }
+  .proj-item h3{font-size:16px; font-weight:700; margin-bottom:4px; line-height:1.3;}
+  .proj-item p{font-size:13.5px; color:var(--muted); line-height:1.45;}
+
+  /* STACK */
+  .stack-group-block{margin-bottom:36px;}
+  .stack-group-block:last-child{margin-bottom:0;}
+  .stack-group-title{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:16px; display:flex; align-items:center; gap:12px;
+  }
+  .stack-group-title::after{content:''; flex:1; height:1px; background:var(--border);}
+  .stack-icon-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .stack-card{
+    position:relative; background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:20px 12px 18px; display:flex; flex-direction:column; align-items:center; gap:10px;
+    box-shadow:var(--shadow); transition:transform .18s ease, border-color .18s ease;
+  }
+  .stack-card:hover{transform:translateY(-3px); border-color:var(--accent);}
+  .stack-card{transition:transform .3s var(--ease-out), border-color .3s var(--ease-out);}
+  .stack-card .num{position:absolute; top:12px; left:14px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.04em;}
+  .stack-icon{
+    width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; color:#fff; margin-top:8px;
+    transition:transform .3s var(--ease-out);
+  }
+  .stack-icon svg{width:26px; height:26px;}
+  .stack-card:hover .stack-icon{transform:scale(1.08) rotate(-3deg);}
+  .stack-card .label{font-size:13px; font-weight:500; text-align:center; color:var(--ink);}
+
+  /* CONTACTO */
+  .contact-panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:44px;
+    box-shadow:var(--shadow); display:grid; grid-template-columns:1.2fr .8fr; gap:36px; align-items:center;
+  }
+  .contact-panel h2{font-family:'JetBrains Mono',monospace; font-size:clamp(24px,3.4vw,32px); margin-bottom:14px; letter-spacing:-.01em;}
+  .contact-panel p{color:var(--muted); font-size:15.5px; max-width:44ch;}
+  .contact-links{display:flex; flex-direction:column; gap:10px;}
+  .clink{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:13px 16px;
+    text-decoration:none; font-size:14px; transition:border-color .2s, transform .15s;
+    white-space:nowrap;
+  }
+  .clink .l{display:flex; align-items:center; gap:10px; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0;}
+  .clink .arrow{flex-shrink:0;}
+  .clink-icon{
+    width:24px; height:24px; border-radius:7px; display:inline-flex; align-items:center; justify-content:center;
+    color:#fff; flex-shrink:0;
+  }
+  .clink-icon svg{width:14px; height:14px;}
+  .clink:hover{border-color:var(--accent); transform:translateX(2px);}
+  button.clink{width:100%; text-align:left; font:inherit; cursor:pointer; background:var(--surface-2); border:1px solid var(--border);}
+
+  .toast{
+    position:fixed; top:20px; right:20px; z-index:100;
+    background:var(--surface); border:1px solid var(--online); border-radius:10px;
+    padding:13px 18px; box-shadow:var(--shadow);
+    display:flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink);
+    transform:translateY(-14px); opacity:0; pointer-events:none;
+    transition:transform .25s ease, opacity .25s ease;
+  }
+  .toast.show{transform:translateY(0); opacity:1;}
+  .toast .check{color:var(--online); font-weight:700;}
+  @media (max-width:560px){
+    .toast{left:16px; right:16px; top:14px;}
+  }
+  .clink .l{display:flex; align-items:center; gap:10px; color:var(--ink);}
+  .clink .arrow{color:var(--muted); font-family:'JetBrains Mono',monospace;}
+
+  footer{border-top:1px solid var(--border); padding:28px 0; margin-top:20px;}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+  footer p{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);}
+
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .about-grid{grid-template-columns:1fr;}
+    .proj-layout{grid-template-columns:1fr;}
+    .proj-info{position:static;}
+    .stack-icon-grid{grid-template-columns:repeat(3,1fr);}
+    .contact-panel{grid-template-columns:1fr;}
+    .navlinks{display:none;}
+  }
+  @media (max-width:560px){
+    section{padding:64px 0;}
+    .stack-icon-grid{grid-template-columns:repeat(2,1fr);}
+    nav{padding:14px 18px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="brand"><span class="dot"></span>JR<span style="color:var(--muted); font-weight:400;">.dev</span></div>
+    <div class="navwrap">
+      <ul class="navlinks">
+        <li><a href="#sobre-mi">Sobre_mí</a></li>
+        <li><a href="#experiencia">Experiencia</a></li>
+        <li><a href="#proyectos">Proyectos</a></li>
+        <li><a href="#stack">Stack</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+      <div class="themebtn" role="group" aria-label="Selector de tema">
+        <button id="btn-light" aria-label="Tema claro">☀</button>
+        <button id="btn-auto" aria-label="Tema automático">◐</button>
+        <button id="btn-dark" aria-label="Tema oscuro">☾</button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO / SOBRE MI intro -->
+  <section class="hero" id="hero">
+    <div class="eyebrow">desarrollador_full_stack · buenos_aires_ar</div>
+    <div class="hero-grid">
+      <div>
+        <h1>Javier<br>Rodríguez<span>.</span></h1>
+        <p class="lead">Construyo interfaces en tiempo real para productos SaaS — de sistemas de control de accesos biométricos a plataformas de gestión comercial — con React, Angular y TypeScript.</p>
+        <div class="cta-row">
+          <a href="#proyectos" class="btn btn-primary">Ver proyectos →</a>
+          <a href="#contacto" class="btn btn-secondary">Contactarme</a>
+          <a href="Javier-Rodriguez-CV-Dev.pdf" download class="btn btn-secondary">Descargar CV ↓</a>
+        </div>
+        <div class="meta-row">
+          <span class="item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Buenos Aires, Argentina</span>
+          <span class="item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>+4 años de experiencia</span>
+          <span class="item"><span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--online);display:inline-block;"></span>Disponible para nuevos proyectos</span>
+        </div>
+      </div>
+
+      <div class="console" aria-hidden="true">
+        <div class="console-top">
+          <div class="dots"><span></span><span></span><span></span></div>
+          control-de-accesos · live_feed
+        </div>
+        <div class="console-body" id="console-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE MI -->
+  <section id="sobre-mi">
+    <div class="eyebrow">01 · sobre mí</div>
+    <div class="about-grid">
+      <div class="reveal">
+        <h2>De soporte técnico a construir los sistemas que ese soporte usaba.</h2>
+        <p>Empecé en <strong>soporte técnico</strong> resolviendo problemas de usuarios reales, configurando redes y manteniendo hardware. Esa base me dejó algo que se nota en cómo construyo software: escucho antes de programar y priorizo que la interfaz sea clara para quien la usa todos los días.</p>
+        <p>Hoy soy <strong>Ingeniero de Sistemas</strong> y Desarrollador Full Stack, especializado en <strong>SPAs escalables</strong> con React y Angular. Trabajo sobre todo con <strong>comunicación en tiempo real</strong> (WebSockets) e integración de APIs REST — construí, por ejemplo, el frontend de una plataforma de fichaje biométrico que muestra accesos a empresas en el instante en que suceden.</p>
+        <p>Me interesan los proyectos donde el dato tiene que llegar a tiempo: dashboards, monitoreo, notificaciones. Y me gusta dejar arquitecturas modulares y componentes reutilizables que el próximo desarrollador entienda sin pedirme explicaciones.</p>
+      </div>
+      <div class="facts reveal">
+        <div class="fact"><span class="k">Rol actual</span><span class="v">Frontend Developer @ XimioDev</span></div>
+        <div class="fact"><span class="k">Formación</span><span class="v">Ing. de Sistemas</span></div>
+        <div class="fact"><span class="k">Especialidad</span><span class="v">React · Angular · TS</span></div>
+        <div class="fact"><span class="k">Diferencial</span><span class="v">Tiempo real / WebSockets</span></div>
+        <div class="fact"><span class="k">Idiomas</span><span class="v">Español (nativo)</span></div>
+        <div class="fact"><span class="k">Inglés</span><span class="v">Básico — técnico</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCIA -->
+  <section id="experiencia">
+    <div class="eyebrow">02 · experiencia</div>
+    <h2 class="mono" style="font-size:clamp(26px,3.5vw,34px); margin-bottom:40px; letter-spacing:-.01em;">Mi experiencia</h2>
+    <div class="timeline">
+
+      <div class="tl-item reveal">
+        <div class="tl-num">01</div>
+        <div class="tl-header">
+          <div class="tl-role">Desarrollador Frontend · <span class="company">XimioDev / R&D</span></div>
+          <div class="tl-date">02/2022 — Presente</div>
+        </div>
+        <ul class="tl-list">
+          <li>Desarrollo del frontend de <strong>Control de Accesos</strong>, plataforma SaaS de fichaje biométrico (rostro, huella, tarjeta) con visualización de accesos en tiempo real.</li>
+          <li>Comunicación por <strong>WebSocket</strong> con dispositivos de fichaje y notificaciones instantáneas.</li>
+          <li>Módulo de reportes de fichadas: exportación y análisis de entradas/salidas.</li>
+          <li>Desarrollo de <strong>FiscalNube</strong>, sistema de gestión comercial tipo punto de venta.</li>
+          <li>Componentes reutilizables en React/TypeScript bajo arquitectura modular; decisiones sobre estructura de carpetas, estado e integración de APIs.</li>
+          <li>SPA en Angular/TypeScript para un cliente con más de <strong>300 usuarios</strong>, con alta de usuarios y control de acceso.</li>
+          <li>Integración de <strong>dispositivos IoT</strong> en tanques para monitoreo de niveles en tiempo real, con generación automática de reportes en Excel.</li>
+          <li>Arquitectura MVC con servicios Angular e inyección de dependencias.</li>
+        </ul>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-num">02</div>
+        <div class="tl-header">
+          <div class="tl-role">Analista de Soporte · <span class="company">Sego</span></div>
+          <div class="tl-date">2023 — 2024</div>
+        </div>
+        <ul class="tl-list">
+          <li>Instalación y montaje de racks para servidores y equipos de red.</li>
+          <li>Armado y certificación de fichas de red.</li>
+          <li>Configuración de redes locales: asignación de IP, routers y switches.</li>
+          <li>Instalación de sistemas operativos y software especializado.</li>
+          <li>Soporte técnico presencial y remoto a usuarios finales.</li>
+        </ul>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-num">03</div>
+        <div class="tl-header">
+          <div class="tl-role">Analista de Soporte · <span class="company">Corporación Infored C.A.</span></div>
+          <div class="tl-date">2016 — 2019 · Venezuela</div>
+        </div>
+        <ul class="tl-list">
+          <li>Mantenimiento preventivo y correctivo de equipos informáticos.</li>
+          <li>Instalación de programas y aplicaciones para los usuarios.</li>
+          <li>Soporte técnico y acompañamiento a usuarios finales.</li>
+          <li>Capacitación y apoyo en ofimática (Word, Excel) y herramientas de Windows.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROYECTOS -->
+  <section id="proyectos">
+    <div class="eyebrow">03 · proyectos</div>
+    <h2 class="mono" style="font-size:clamp(26px,3.5vw,34px); margin-bottom:24px; letter-spacing:-.01em;">Proyectos</h2>
+
+    <div class="tab-row" role="tablist" aria-label="Filtrar proyectos">
+      <button class="tab active" data-cat="todos">Todos</button>
+      <button class="tab" data-cat="frontend">Frontend</button>
+      <button class="tab" data-cat="fullstack">Full Stack</button>
+      <button class="tab" data-cat="empresas">Empresas</button>
+      <button class="tab" data-cat="personales">Personales</button>
+    </div>
+
+    <div class="proj-layout">
+
+      <!-- Panel de contexto / detalle -->
+      <div class="proj-info" id="proj-info"></div>
+
+      <!-- Lista filtrable -->
+      <div class="proj-list" id="proj-list">
+
+        <button class="proj-item reveal" data-id="accesos" data-cats="frontend empresas">
+          <span class="pnum mono">§01</span>
+          <div>
+            <h3>Control de Accesos — Biométrico</h3>
+            <p>Se conecta a los dispositivos (huella, tarjeta) y muestra en vivo quién entra y sale.</p>
+          </div>
+        </button>
+
+        <button class="proj-item reveal" data-id="visitas" data-cats="fullstack empresas">
+          <span class="pnum mono">§02</span>
+          <div>
+            <h3>Gestión de Accesos y Visitas</h3>
+            <p>Sin hardware: carga manual de personas, invitaciones por WhatsApp y bloqueo de acceso.</p>
+          </div>
+        </button>
+
+        <button class="proj-item reveal" data-id="fiscalnube" data-cats="frontend empresas">
+          <span class="pnum mono">§03</span>
+          <div>
+            <h3>FiscalNube</h3>
+            <p>Facturación tipo punto de venta: productos, cierre de caja y reportes de ventas.</p>
+          </div>
+        </button>
+
+        <button class="proj-item reveal" data-id="viandas" data-cats="fullstack empresas">
+          <span class="pnum mono">§04</span>
+          <div>
+            <h3>Pedidos de viandas — Dovas</h3>
+            <p>Reemplazó un Google Form + WhatsApp por un sistema propio de pedidos.</p>
+          </div>
+        </button>
+
+        <button class="proj-item reveal" data-id="autismo" data-cats="frontend personales">
+          <span class="pnum mono">§05</span>
+          <div>
+            <h3>App para niños con autismo — tesis</h3>
+            <p>Juegos didácticos para apoyar el aprendizaje. Mi trabajo de tesis.</p>
+          </div>
+        </button>
+
+        <button class="proj-item reveal" data-id="recoleccion" data-cats="frontend empresas">
+          <span class="pnum mono">§06</span>
+          <div>
+            <h3>Recolección de datos electrónicos</h3>
+            <p>Monitoreo de tanques de almacenamiento de productos de limpieza.</p>
+          </div>
+        </button>
+
+        <button class="proj-item reveal" data-id="ecommerce" data-cats="fullstack personales">
+          <span class="pnum mono">§07</span>
+          <div>
+            <h3>Ecommerce</h3>
+            <p>Catálogo, autenticación con Google y pasarela de pagos con Mercado Pago.</p>
+          </div>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="eyebrow">04 · stack</div>
+    <h2 class="mono" style="font-size:clamp(26px,3.5vw,34px); margin-bottom:36px; letter-spacing:-.01em;">Stack técnico</h2>
+
+    <div class="stack-group-block">
+      <div class="stack-group-title">Frontend</div>
+      <div class="stack-icon-grid">
+        <div class="stack-card reveal"><span class="num">01</span><div class="stack-icon" style="background:#149ECA;"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="1.8" fill="white"/><ellipse cx="12" cy="12" rx="9" ry="3.6" stroke="white" stroke-width="1.3"/><ellipse cx="12" cy="12" rx="9" ry="3.6" stroke="white" stroke-width="1.3" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" stroke="white" stroke-width="1.3" transform="rotate(120 12 12)"/></svg></div><span class="label">React</span></div>
+        <div class="stack-card reveal"><span class="num">02</span><div class="stack-icon" style="background:#DD1B16;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3l8 3-1.2 10L12 21l-6.8-5L4 6l8-3z"/><path d="M9 15.5L12 7l3 8.5M9.9 12.8h4.2"/></svg></div><span class="label">Angular</span></div>
+        <div class="stack-card reveal"><span class="num">03</span><div class="stack-icon" style="background:#3178C6;">TS</div><span class="label">TypeScript</span></div>
+        <div class="stack-card reveal"><span class="num">04</span><div class="stack-icon" style="background:#C9A400;">JS</div><span class="label">JavaScript</span></div>
+        <div class="stack-card reveal"><span class="num">05</span><div class="stack-icon" style="background:#E44D26;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"><path d="M5 3h14l-1.3 15L12 21l-5.7-3L5 3z"/><text x="12" y="15.5" font-size="7" font-weight="700" text-anchor="middle" fill="white" stroke="none" font-family="'JetBrains Mono',monospace">5</text></svg></div><span class="label">HTML5</span></div>
+        <div class="stack-card reveal"><span class="num">06</span><div class="stack-icon" style="background:#2965F1;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"><path d="M5 3h14l-1.3 15L12 21l-5.7-3L5 3z"/><text x="12" y="15.5" font-size="7" font-weight="700" text-anchor="middle" fill="white" stroke="none" font-family="'JetBrains Mono',monospace">3</text></svg></div><span class="label">CSS3</span></div>
+      </div>
+    </div>
+
+    <div class="stack-group-block">
+      <div class="stack-group-title">Backend</div>
+      <div class="stack-icon-grid">
+        <div class="stack-card reveal"><span class="num">01</span><div class="stack-icon" style="background:#3C873A;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2l8 4.6v10.8L12 22l-8-4.6V6.6L12 2z"/></svg></div><span class="label">Node.js</span></div>
+        <div class="stack-card reveal"><span class="num">02</span><div class="stack-icon" style="background:#146C74;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13M17 8l-3-3M17 8l-3 3"/><path d="M20 16H7M7 16l3-3M7 16l3 3"/></svg></div><span class="label">APIs REST</span></div>
+        <div class="stack-card reveal"><span class="num">03</span><div class="stack-icon" style="background:#1F9D63;"><svg viewBox="0 0 24 24" fill="white" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></div><span class="label">Supabase</span></div>
+        <div class="stack-card reveal"><span class="num">04</span><div class="stack-icon" style="background:#FF6C37;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M21 3L3 10.5l7 2.5 2 7L21 3z"/><path d="M10 13l4-5"/></svg></div><span class="label">Postman</span></div>
+        <div class="stack-card reveal"><span class="num">05</span><div class="stack-icon" style="background:#0F7C86;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><path d="M5 12a7 7 0 0 1 14 0"/><path d="M8 12a4 4 0 0 1 8 0"/><circle cx="12" cy="12" r="1.4" fill="white" stroke="none"/></svg></div><span class="label">WebSockets</span></div>
+      </div>
+    </div>
+
+    <div class="stack-group-block">
+      <div class="stack-group-title">Planning & Herramientas</div>
+      <div class="stack-icon-grid">
+        <div class="stack-card reveal"><span class="num">01</span><div class="stack-icon" style="background:#24292E;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="9" r="2"/><path d="M6 8v8"/><path d="M6 14c0-3 3-3 6-3.5 3-.5 4-1 4-2.5"/></svg></div><span class="label">GitHub</span></div>
+        <div class="stack-card reveal"><span class="num">02</span><div class="stack-icon" style="background:#0078D4;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-1-7.9A5 5 0 0 1 15 8a4 4 0 0 1 2 7.9"/><path d="M9 13l2 2 4-4"/></svg></div><span class="label">Azure DevOps</span></div>
+        <div class="stack-card reveal"><span class="num">03</span><div class="stack-icon" style="background:#000000;"><svg viewBox="0 0 24 24"><path d="M12 4l9 16H3z" fill="white"/></svg></div><span class="label">Vercel</span></div>
+        <div class="stack-card reveal"><span class="num">04</span><div class="stack-icon" style="background:#E8710A;"><svg viewBox="0 0 24 24" fill="white" stroke="none"><rect x="4" y="12" width="3.5" height="8"/><rect x="10.2" y="7" width="3.5" height="13"/><rect x="16.4" y="15" width="3.5" height="5"/></svg></div><span class="label">Google Analytics</span></div>
+        <div class="stack-card reveal"><span class="num">05</span><div class="stack-icon" style="background:#4285F4;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-5-5"/></svg></div><span class="label">Search Console</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <div class="eyebrow">05 · contacto</div>
+    <div class="contact-panel reveal">
+      <div>
+        <h2>Hablemos</h2>
+        <p>Disponible para posiciones full-time de Frontend / Full Stack. Si estás en RR.HH. o liderás un equipo técnico y mi perfil encaja, escribime por acá — respondo rápido.</p>
+      </div>
+      <div class="contact-links">
+        <button class="clink" id="copy-email" type="button">
+          <span class="l"><span class="clink-icon" style="background:var(--accent);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>javierbermudez41@gmail.com</span><span class="arrow">Copiar →</span>
+        </button>
+        <a class="clink" href="https://www.linkedin.com/in/javier-rodr%C3%ADguez-924709133/" target="_blank" rel="noopener">
+          <span class="l"><span class="clink-icon" style="background:#0A66C2; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px;">in</span>LinkedIn</span><span class="arrow">→</span>
+        </a>
+        <a class="clink" href="https://github.com/JavierRodriguezB" target="_blank" rel="noopener">
+          <span class="l"><span class="clink-icon" style="background:#181717;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="9" r="2"/><path d="M6 8v8"/><path d="M6 14c0-3 3-3 6-3.5 3-.5 4-1 4-2.5"/></svg></span>GitHub</span><span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Javier Rodríguez</p>
+    <p>Buenos Aires, Argentina</p>
+  </div>
+</footer>
+
+<div class="toast" id="copy-toast" role="status" aria-live="polite">
+  <span class="check">✓</span>
+  <span>Email copiado al portapapeles</span>
+</div>
+
+<script>
+  // Theme handling: 'light' | 'dark' | 'auto' (auto = follows OS/browser preference)
+  const root = document.documentElement;
+  const btns = { light: document.getElementById('btn-light'), auto: document.getElementById('btn-auto'), dark: document.getElementById('btn-dark') };
+
+  function applyTheme(mode){
+    root.setAttribute('data-theme', mode === 'auto' ? 'auto' : mode);
+    Object.entries(btns).forEach(([k,b]) => b.classList.toggle('active', k === mode));
+  }
+  let currentMode = 'auto';
+  applyTheme(currentMode);
+
+  btns.light.addEventListener('click', () => { currentMode='light'; applyTheme(currentMode); });
+  btns.auto.addEventListener('click', () => { currentMode='auto'; applyTheme(currentMode); });
+  btns.dark.addEventListener('click', () => { currentMode='dark'; applyTheme(currentMode); });
+
+  // Live console ticker (signature element)
+  const feed = [
+    { tag: 'ACCESO_OK', msg: 'Frontend Developer · React / TS' },
+    { tag: 'WS_CONNECT', msg: 'sincronización en tiempo real activa' },
+    { tag: 'BUILD', msg: 'Control de Accesos — módulo de reportes' },
+    { tag: 'DEPLOY', msg: 'FiscalNube · gestión comercial' },
+    { tag: 'STATUS', msg: 'disponible para nuevos proyectos' },
+  ];
+  const body = document.getElementById('console-body');
+  function ts(){
+    const d = new Date();
+    return d.toTimeString().slice(0,8);
+  }
+  function renderLine(item, delay){
+    const div = document.createElement('div');
+    div.className = 'log-line';
+    div.style.animationDelay = delay + 'ms';
+    div.innerHTML = `<span class="ts">[${ts()}]</span><span class="tag">${item.tag}</span><span class="msg">${item.msg}</span>`;
+    body.appendChild(div);
+  }
+  function playFeed(){
+    body.innerHTML = '';
+    feed.forEach((item, i) => renderLine(item, i * 350));
+    const cursor = document.createElement('div');
+    cursor.className = 'cursor-line';
+    cursor.innerHTML = `<span>$</span><span class="caret"></span>`;
+    setTimeout(() => body.appendChild(cursor), feed.length * 350 + 200);
+  }
+  playFeed();
+  setInterval(playFeed, 9000);
+
+  // Scroll reveal: aplica stagger dentro de cada contenedor y observa cuándo entran en pantalla
+  function setupReveal(containerSelector, itemSelector, staggerMs){
+    document.querySelectorAll(containerSelector).forEach(container => {
+      const items = container.matches(itemSelector) ? [container] : container.querySelectorAll(itemSelector);
+      items.forEach((el, i) => { el.style.transitionDelay = (i * staggerMs) + 'ms'; });
+    });
+  }
+  setupReveal('.about-grid', '.reveal', 120);
+  setupReveal('.timeline', '.tl-item', 90);
+  setupReveal('#proj-list', '.proj-item', 50);
+  setupReveal('.stack-group-block', '.stack-card', 25);
+  setupReveal('#contacto', '.contact-panel', 0);
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Proyectos: datos de detalle
+  const projects = {
+    accesos: {
+      title: 'Control de Accesos — Biométrico',
+      tag: 'React · WebSocket · TypeScript',
+      cat: 'Frontend · Empresa',
+      url: 'https://app.accesonube.ar/login',
+      desc: 'Plataforma que se conecta directo a los dispositivos de fichaje (huella y tarjeta magnética) para mostrar en tiempo real quién entra y sale de cada área. Incluye registro de personas y sus huellas, organización por departamentos, un dashboard en vivo y reportes de fichadas exportables. Fui el frontend del equipo: construí toda la interfaz en React y la comunicación por WebSocket que escucha los dispositivos y dispara las notificaciones al instante.',
+      icon: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/></svg>'
+    },
+    visitas: {
+      title: 'Gestión de Accesos y Visitas',
+      tag: 'React · Node.js · WhatsApp',
+      cat: 'Full Stack · Empresa',
+      url: 'https://controldeaccesosvolvo.vercel.app/',
+      desc: 'El otro sistema de control de accesos que hice, pero sin hardware de por medio: acá los datos de las personas se cargan directamente en el sistema para saber cuándo entran y salen. Permite mandar invitaciones por WhatsApp para agendar citas, bloquear el acceso a personas puntuales y registrar si la persona tiene vehículo, para controlar también el ingreso de autos. Lo armé yo solo, de punta a punta: base de datos, backend y frontend.',
+      icon: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3.5 2.5-6 5.5-6s5.5 2.5 5.5 6"/><path d="M16 12l2 2 4-4"/></svg>'
+    },
+    fiscalnube: {
+      title: 'FiscalNube',
+      tag: 'React · TypeScript',
+      cat: 'Frontend · Empresa',
+      url: 'https://remdev.ximiodev.com/login',
+      desc: 'Sistema de facturación tipo punto de venta, como el que usan los supermercados para cobrar: carga de productos, facturación, cierre de caja, consulta de saldo, reportes de ventas, usuarios y roles. Fui el frontend: construí toda la interfaz en React/TypeScript, con componentes pensados para que cajeros sin perfil técnico la usen sin fricción.',
+      icon: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg>'
+    },
+    viandas: {
+      title: 'Pedidos de viandas — Dovas',
+      tag: 'React · Supabase',
+      cat: 'Full Stack · Empresa',
+      url: 'https://www.dovas.com.ar/',
+      appUrl: 'https://app.dovas.com.ar/',
+      desc: 'Para Dovas, un catering que antes cargaba sus menús en un Google Form y coordinaba los pedidos por WhatsApp a mano. Armé un sistema con dos módulos: uno administrativo para cargar los platillos, habilitarlos por franja horaria, crear usuarios y ver el historial de pedidos; y uno de login para que sus clientes pidan comida directo desde la app. Hice todo yo solo — planificación, frontend, backend, la landing y el deploy.',
+      icon: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>'
+    },
+    autismo: {
+      title: 'App para niños con autismo — tesis',
+      tag: 'Angular',
+      cat: 'Frontend · Personal',
+      desc: 'Mi trabajo de tesis: una aplicación web con juegos didácticos pensados para apoyar el aprendizaje de niños con autismo, con una interfaz simple y feedback claro en cada interacción.',
+      icon: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4h4v2a2 2 0 1 0 0 4v2h4v4h-2a2 2 0 1 0 0 4h2v2H9v-4H7a2 2 0 1 1 0-4h2V4z"/></svg>'
+    },
+    recoleccion: {
+      title: 'Recolección de datos electrónicos',
+      tag: 'Angular',
+      cat: 'Frontend · Empresa',
+      desc: 'SPA de reportes para una empresa de productos de limpieza: mostrábamos en tiempo real los datos que un dispositivo instalado en sus tanques de almacenamiento iba recopilando, para hacer seguimiento de los niveles sin tener que revisarlos a mano. Fui el frontend del equipo.',
+      icon: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="12" width="4" height="8"/><rect x="10" y="7" width="4" height="13"/><rect x="16" y="15" width="4" height="5"/></svg>'
+    },
+    ecommerce: {
+      title: 'Ecommerce',
+      tag: 'React · Mercado Pago',
+      cat: 'Full Stack · Personal',
+      desc: 'Proyecto 100% personal: catálogo de productos, autenticación con Google y pasarela de pagos con Mercado Pago, armado de punta a punta para practicar un flujo real de ecommerce, del catálogo a la confirmación del pago.',
+      icon: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6"/></svg>'
+    }
+  };
+
+  const projInfo = document.getElementById('proj-info');
+  const projItems = document.querySelectorAll('.proj-item');
+
+  function renderProjDefault(){
+    projInfo.innerHTML = `
+      <div class="proj-info-fade">
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 13h8"/><path d="M8 16h5"/></svg></div>
+        <h3>Mis proyectos</h3>
+        <div class="info-cat">Portfolio · 2022 — 2026</div>
+        <p>Elegí uno de la lista para ver el detalle: qué problema resuelve, qué construí específicamente y con qué stack. Podés filtrar por tipo con las pestañas de arriba.</p>
+      </div>
+    `;
+  }
+
+  function renderProjDetail(id){
+    const p = projects[id];
+    if(!p) return;
+    let links = '';
+    if(p.url && p.appUrl){
+      links += `<a class="info-demo" href="${p.url}" target="_blank" rel="noopener">Ver landing →</a>`;
+      links += `<a class="info-demo" href="${p.appUrl}" target="_blank" rel="noopener">Ver app →</a>`;
+    } else if(p.url){
+      links += `<a class="info-demo" href="${p.url}" target="_blank" rel="noopener">Ver demo →</a>`;
+    }
+    projInfo.innerHTML = `
+      <div class="proj-info-fade">
+        <div class="ph-icon">${p.icon}</div>
+        <h3>${p.title}</h3>
+        <div class="info-cat">${p.cat}</div>
+        <p>${p.desc}</p>
+        <div class="info-stack">${p.tag}</div>
+        ${links ? `<div class="info-demo-row">${links}</div>` : ''}
+      </div>
+    `;
+  }
+
+  renderProjDefault();
+
+  projItems.forEach(item => {
+    item.addEventListener('click', () => {
+      projItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      renderProjDetail(item.dataset.id);
+    });
+  });
+
+  // Proyectos: filtro por categoría (con entrada escalonada)
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const cat = tab.dataset.cat;
+      let visibleIndex = 0;
+      projItems.forEach(item => {
+        const cats = item.dataset.cats.split(' ');
+        const shouldShow = cat === 'todos' || cats.includes(cat);
+        if(shouldShow){
+          item.classList.remove('is-hidden');
+          item.classList.add('anim-in');
+          item.style.transitionDelay = (visibleIndex * 45) + 'ms';
+          visibleIndex++;
+        } else {
+          item.classList.add('is-hidden');
+        }
+      });
+      // fuerza reflow y luego dispara la transición de entrada
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          projItems.forEach(item => item.classList.remove('anim-in'));
+        });
+      });
+      // si el proyecto activo queda oculto por el filtro, volvemos al panel por defecto
+      const active = document.querySelector('.proj-item.active');
+      if(active && active.classList.contains('is-hidden')){
+        active.classList.remove('active');
+        renderProjDefault();
+      }
+    });
+  });
+
+  // Contacto: copiar email al portapapeles
+  const copyBtn = document.getElementById('copy-email');
+  const toast = document.getElementById('copy-toast');
+  let toastTimer;
+  function showToast(){
+    clearTimeout(toastTimer);
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+  copyBtn.addEventListener('click', async () => {
+    const email = 'javierbermudez41@gmail.com';
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch (err) {
+      // fallback si el navegador bloquea la API de portapapeles
+      const tmp = document.createElement('textarea');
+      tmp.value = email;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
+    }
+    copyBtn.style.borderColor = 'var(--online)';
+    setTimeout(() => { copyBtn.style.borderColor = ''; }, 900);
+    showToast();
+  });
+</script>
+
+</body>
+</html>
